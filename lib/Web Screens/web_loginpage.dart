@@ -14,6 +14,8 @@ class _web_loginpageState extends State<web_loginpage> {
       body: Column(
         children: [
           Text("Web Login Page"),
+          Text("Hi"),
+          Center(child: Text("ajbdhjasdb"),)
         ],
       ),
     );
