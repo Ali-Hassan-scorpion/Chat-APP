@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1067176453727-o4gpmg7vsv39mh2r8imjuevpevdggh0s.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1067176453727-o4gpmg7vsv39mh2r8imjuevpevdggh0s</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB45rfY_Vor4BT8_IFZf5uzZrWG5Y96sog</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1067176453727</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.safeCityProject</string>
+	<key>PROJECT_ID</key>
+	<string>safecityproject-28555</string>
+	<key>STORAGE_BUCKET</key>
+	<string>safecityproject-28555.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1067176453727:ios:5114d7f5db6de1173e1dea</string>
+</dict>
+</plist>

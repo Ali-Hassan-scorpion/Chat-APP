@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1067176453727",
+    "project_id": "safecityproject-28555",
+    "storage_bucket": "safecityproject-28555.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067176453727:android:be407e99689cbad93e1dea",
+        "android_client_info": {
+          "package_name": "com.example.safe_city_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067176453727-n9ullenmglde2odpplaq40cb9u464400.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJy4YldlDUDqGMoWtc617QKH9KuSUXcKg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1067176453727-n9ullenmglde2odpplaq40cb9u464400.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
