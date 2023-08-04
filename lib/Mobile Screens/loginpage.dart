@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:safe_city_project/Mobile%20Screens/UserDashboard.dart';
 import '../set_height_and_width.dart';
@@ -15,10 +16,33 @@ class loginpage extends StatefulWidget {
 
 class _loginpageState extends State<loginpage> {
   final _formfield = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passController = TextEditingController();
   bool passToggle = true;
   bool loading = false;
+
+  static Future<User?> loginUsingEmailPassword(
+      {required String email,
+      required String password,
+      required BuildContext context}) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user;
+    try {
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      user = userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        const snackBar = SnackBar(content: Text("User Not Found"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else if (e.code == 'wrong-password') {
+        const snackBar = SnackBar(content: Text("Wrong password"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+    return user;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +94,7 @@ class _loginpageState extends State<loginpage> {
                       }
                     },
                     keyboardType: TextInputType.emailAddress,
-                    controller: emailController,
+                    controller: _emailController,
                     decoration: InputDecoration(
                         labelText: "Email",
                         labelStyle: const TextStyle(
@@ -100,7 +124,7 @@ class _loginpageState extends State<loginpage> {
                   margin: EdgeInsets.only(
                       left: getwidth(context) * 0.05,
                       right: getwidth(context) * 0.05),
-                  padding: EdgeInsets.only(left: 15,right: 15),
+                  padding: EdgeInsets.only(left: 15, right: 15),
                   child: TextFormField(
                     style: const TextStyle(color: Colors.black),
                     validator: (value) {
@@ -110,7 +134,7 @@ class _loginpageState extends State<loginpage> {
                     },
                     obscureText: passToggle,
                     keyboardType: TextInputType.emailAddress,
-                    controller: passController,
+                    controller: _passController,
                     decoration: InputDecoration(
                       labelText: "Password",
                       labelStyle: const TextStyle(
@@ -151,7 +175,18 @@ class _loginpageState extends State<loginpage> {
                   height: 20,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () async {
+                    User? user = await loginUsingEmailPassword(
+                        email: _emailController.text,
+                        password: _passController.text,
+                        context: context);
+                    if (user != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const UserDashboard()));
+                    }
+                  },
                   child: Container(
                     height: 50,
                     width: 180,
@@ -222,7 +257,7 @@ class _loginpageState extends State<loginpage> {
           ),
         ),
       ),
-      bottomNavigationBar:Container(
+      bottomNavigationBar: Container(
         margin: EdgeInsets.only(bottom: getheight(context) * 0.04),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -237,7 +272,8 @@ class _loginpageState extends State<loginpage> {
                 borderRadius: BorderRadius.circular(15),
               ),
             ),
-            const SizedBox(width: 5), // Add some space between the logo and the text
+            const SizedBox(width: 5),
+            // Add some space between the logo and the text
             Text(
               'Powered By Safe City',
               style: TextStyle(
