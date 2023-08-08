@@ -18,13 +18,20 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Container(
-            color: Colors.blueAccent,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+                Color.fromRGBO(120, 149, 203, 1),
+                Color.fromRGBO(74, 85, 162, 1),
+              ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            ),
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(14.0),
-                  child: Image.asset('assets/images/logo.png', width: 40, height: 40),
+                  child: Image.asset('assets/images/logo.png',
+                      width: 40, height: 40),
                 ),
                 Text(
                   'ICT Police TalkHub',
@@ -41,7 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
             child: ListView(
               children: [
                 contact(
-                  'assets/10.jpg',
+                  'assets/images/logo.png',
                   'Ayoub',
                   '19:30',
                   'online',
@@ -49,7 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/20.jpg',
+                  'assets/images/logo.png',
                   'Anas',
                   '10:05',
                   'online',
@@ -57,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/30.jpg',
+                  'assets/images/logo.png',
                   'Hamid',
                   '18:20',
                   'online',
@@ -65,7 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/40.jpg',
+                  'assets/images/logo.png',
                   'yassine',
                   '12:10',
                   'online',
@@ -73,7 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/50.jpg',
+                  'assets/images/logo.png',
                   'Ayman',
                   '16:45',
                   'online',
@@ -81,7 +88,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/60.jpg',
+                  'assets/images/logo.png',
                   'Achraf',
                   '19:30',
                   'online',
@@ -89,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/70.jpg',
+                  'assets/images/logo.png',
                   'Hamza',
                   'Yesterday',
                   'online',
@@ -97,7 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/80.jpg',
+                  'assets/images/logo.png',
                   'youssef',
                   'Yesterday',
                   'online',
@@ -105,7 +112,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/90.jpg',
+                  'assets/images/logo.png',
                   'Mohamed',
                   'Yesterday',
                   'online',
@@ -113,7 +120,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/100.jpg',
+                  'assets/images/logo.png',
                   'tariq',
                   '4/23/22',
                   'online',
@@ -121,7 +128,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/110.jpg',
+                  'assets/images/logo.png',
                   'Adam',
                   '4/23/22',
                   'online',
@@ -129,7 +136,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   context,
                 ),
                 contact(
-                  'assets/120.jpg',
+                  'assets/images/logo.png',
                   'Islam',
                   '4/23/22',
                   'online',
@@ -143,7 +150,8 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: const Icon(Icons.chat),
+        backgroundColor: Color.fromRGBO(120, 149, 203, 1),
+        child: const Icon(Icons.chat,),
       ),
     );
   }
@@ -194,7 +202,17 @@ Widget contact(
 
 Widget message(String urlImage, String title, String onOff, context) {
   return Scaffold(
+    extendBodyBehindAppBar: true,
     appBar: AppBar(
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Color.fromRGBO(120, 149, 203, 1),
+            Color.fromRGBO(74, 85, 162, 1),
+          ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        ),
+      ),
       titleSpacing: 0.0,
       leading: IconButton(
         onPressed: () {
@@ -263,8 +281,8 @@ class ChatMess extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-            color: const Color(0xffdcf8c6),
-            borderRadius: BorderRadius.circular(4.0)),
+            color: const  Color.fromRGBO(197, 223, 248, 0.8),
+            borderRadius: BorderRadius.circular(5.0)),
         margin: const EdgeInsets.symmetric(vertical: 2.0),
         child: Text(text),
       ),
@@ -370,21 +388,20 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
               icon: _textController.text == ''
                   ? const CircleAvatar(
                   radius: 30,
-                  backgroundColor: Colors.teal,
+                  backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
                   child: Icon(
                     Icons.mic,
                     color: Colors.white,
                   ))
                   : const CircleAvatar(
                 radius: 30,
-                backgroundColor: Colors.teal,
+                backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
                 child: Icon(
                   Icons.send,
                   color: Colors.white,
                 ),
               ),
-              onPressed: () =>
-                  _handleSubmitted(_textController.text),
+              onPressed: () => _handleSubmitted(_textController.text),
             ),
           ),
         ],
@@ -397,8 +414,8 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
     return Container(
       constraints: const BoxConstraints.expand(),
       decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage("assets/chatBack.jpg"), fit: BoxFit.cover)),
+          image: DecorationImage(opacity: 0.1,scale: 0.5,
+              image: AssetImage("assets/images/logo.png"), fit: BoxFit.contain)),
       child: Column(
         children: [
           Flexible(

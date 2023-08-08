@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'loginpage.dart';
 import '../set_height_and_width.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +23,6 @@ class _signupState extends State<signup> {
   final passController = TextEditingController();
   final firstnameController = TextEditingController();
   final lastnameController = TextEditingController();
-
   bool passToggle = true;
 
   @override
@@ -307,7 +304,7 @@ class _signupState extends State<signup> {
                     height: 40,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: (){},
                     child: Container(
                       height: 50,
                       width: 200,
