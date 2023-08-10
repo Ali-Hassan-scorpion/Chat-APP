@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:safe_city_project/set_height_and_width.dart';
 
 void main() {
   runApp(MaterialApp(home: ChatScreen()));
@@ -12,149 +14,323 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  bool isLoading = false;
+  late Map<String, dynamic> userMap;
+  final TextEditingController _search = TextEditingController();
+
+  void onSearchh() async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    setState(() {
+      isLoading = true;
+    });
+    await _firestore
+        .collection('users')
+        .where('email', isEqualTo: _search.text)
+        .get()
+        .then((value) {
+      setState(() {
+        userMap = value.docs[0].data();
+        isLoading = false;
+      });
+      print(userMap);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
                 Color.fromRGBO(120, 149, 203, 1),
                 Color.fromRGBO(74, 85, 162, 1),
-              ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        ),
+        title: Text('ICT Police TalkHub'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearchDelegate());
+            },
+          ),
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(child: Text('Option 1')),
+                PopupMenuItem(child: Text('Option 2')),
+                // Add more options as needed
+              ];
+            },
+          ),
+        ],
+        elevation: 0, // Remove the elevation from the AppBar
+      ),
+      body: isLoading
+          ? Center(
+              child: Container(
+                height: getheight(context) / 20,
+                width: getwidth(context) / 20,
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: Image.asset('assets/images/logo.png',
-                      width: 40, height: 40),
-                ),
-                Text(
-                  'ICT Police TalkHub',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: ListView(
+                    children: [
+                      contact(
+                        'assets/images/logo.png',
+                        'Ayoub',
+                        '19:30',
+                        'online',
+                        'Chokran bezaf khouya',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'Anas',
+                        '10:05',
+                        'online',
+                        'Inchaalah nji andek...',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'Hamid',
+                        '18:20',
+                        'online',
+                        'Merci beaucoup frero',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'yassine',
+                        '12:10',
+                        'online',
+                        'Thank so much for your help',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'Ayman',
+                        '16:45',
+                        'online',
+                        'Am in the way, just 5 min...',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'Achraf',
+                        '19:30',
+                        'online',
+                        'Fin nta db, ana f casa...',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'Hamza',
+                        'Yesterday',
+                        'online',
+                        'Can you explain to me ?',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'youssef',
+                        'Yesterday',
+                        'online',
+                        'Salam alaykom...',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'Mohamed',
+                        'Yesterday',
+                        'online',
+                        'Lktab lakhor zwin bezaf',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'tariq',
+                        '4/23/22',
+                        'online',
+                        'Wach chritiha men tema',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'Adam',
+                        '4/23/22',
+                        'online',
+                        'Kif halek bikhir, kolchi mzn',
+                        context,
+                      ),
+                      contact(
+                        'assets/images/logo.png',
+                        'Islam',
+                        '4/23/22',
+                        'online',
+                        'It\'s a great story',
+                        context,
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-          Expanded(
-            child: ListView(
-              children: [
-                contact(
-                  'assets/images/logo.png',
-                  'Ayoub',
-                  '19:30',
-                  'online',
-                  'Chokran bezaf khouya',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'Anas',
-                  '10:05',
-                  'online',
-                  'Inchaalah nji andek...',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'Hamid',
-                  '18:20',
-                  'online',
-                  'Merci beaucoup frero',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'yassine',
-                  '12:10',
-                  'online',
-                  'Thank so much for your help',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'Ayman',
-                  '16:45',
-                  'online',
-                  'Am in the way, just 5 min...',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'Achraf',
-                  '19:30',
-                  'online',
-                  'Fin nta db, ana f casa...',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'Hamza',
-                  'Yesterday',
-                  'online',
-                  'Can you explain to me ?',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'youssef',
-                  'Yesterday',
-                  'online',
-                  'Salam alaykom...',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'Mohamed',
-                  'Yesterday',
-                  'online',
-                  'Lktab lakhor zwin bezaf',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'tariq',
-                  '4/23/22',
-                  'online',
-                  'Wach chritiha men tema',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'Adam',
-                  '4/23/22',
-                  'online',
-                  'Kif halek bikhir, kolchi mzn',
-                  context,
-                ),
-                contact(
-                  'assets/images/logo.png',
-                  'Islam',
-                  '4/23/22',
-                  'online',
-                  'It\'s a great story',
-                  context,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Color.fromRGBO(120, 149, 203, 1),
-        child: const Icon(Icons.chat,),
+        child: const Icon(
+          Icons.chat,
+        ),
       ),
     );
   }
+}
+
+class CustomSearchDelegate extends SearchDelegate<String> {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, query);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    if (query.isEmpty) {
+      return Center(
+        child: Text('Please enter a search query'),
+      );
+    }
+
+    return FutureBuilder(
+      future: onSearch(query),
+      builder:
+          (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data == null) {
+          return Center(
+            child: Text('No results found'),
+          );
+        }
+
+        final userMap = snapshot.data!;
+
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Search result for: $query'),
+              Text('User Data: ${userMap.toString()}'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    if (query.isEmpty) {
+      return Container(); // Return an empty container when query is empty
+    }
+    return FutureBuilder(
+      future: getSuggestions(query),
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Show a loading indicator while fetching suggestions
+        }
+
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        final suggestions = snapshot.data ?? [];
+
+        return ListView.builder(
+          itemCount: suggestions.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              title: Text(suggestions[index]),
+              onTap: () {
+                query = suggestions[index]; // Set query and show results
+                showResults(context);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> onSearch(String email) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    QuerySnapshot snapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs[0].data() as Map<String, dynamic>;
+    }
+
+    return {};
+  }
+  Future<List<String>> getSuggestions(String query) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot snapshot = await _firestore
+        .collection('users')
+        .where('email', isGreaterThanOrEqualTo: query)
+        .get();
+
+    List<String> suggestions = [];
+    for (var doc in snapshot.docs) {
+      var email = doc['email'] as String;
+      if (email.startsWith(query)) {
+        suggestions.add(email);
+      }
+    }
+
+    return suggestions;
+  }
+
+
 }
 
 Widget contact(
@@ -276,12 +452,12 @@ class ChatMess extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor:
-      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
       axisAlignment: 0.0,
       child: Container(
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-            color: const  Color.fromRGBO(197, 223, 248, 0.8),
+            color: const Color.fromRGBO(197, 223, 248, 0.8),
             borderRadius: BorderRadius.circular(5.0)),
         margin: const EdgeInsets.symmetric(vertical: 2.0),
         child: Text(text),
@@ -359,7 +535,7 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
                   hintText: 'Message',
                   hintStyle: const TextStyle(fontSize: 20, color: Colors.grey),
                   suffixIconConstraints:
-                  const BoxConstraints(minWidth: 80, maxWidth: 100),
+                      const BoxConstraints(minWidth: 80, maxWidth: 100),
                   suffixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: const [
@@ -387,20 +563,20 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
             child: IconButton(
               icon: _textController.text == ''
                   ? const CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
-                  child: Icon(
-                    Icons.mic,
-                    color: Colors.white,
-                  ))
+                      radius: 30,
+                      backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.white,
+                      ))
                   : const CircleAvatar(
-                radius: 30,
-                backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
-                child: Icon(
-                  Icons.send,
-                  color: Colors.white,
-                ),
-              ),
+                      radius: 30,
+                      backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                      ),
+                    ),
               onPressed: () => _handleSubmitted(_textController.text),
             ),
           ),
@@ -414,8 +590,11 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
     return Container(
       constraints: const BoxConstraints.expand(),
       decoration: const BoxDecoration(
-          image: DecorationImage(opacity: 0.1,scale: 0.5,
-              image: AssetImage("assets/images/logo.png"), fit: BoxFit.contain)),
+          image: DecorationImage(
+              opacity: 0.1,
+              scale: 0.5,
+              image: AssetImage("assets/images/logo.png"),
+              fit: BoxFit.contain)),
       child: Column(
         children: [
           Flexible(

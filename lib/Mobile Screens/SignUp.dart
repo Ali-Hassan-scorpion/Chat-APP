@@ -1,3 +1,6 @@
+import 'package:safe_city_project/For%20Testing%20Purpose/methods.dart';
+
+import 'UserDashboard.dart';
 import 'loginpage.dart';
 import '../set_height_and_width.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +27,15 @@ class _signupState extends State<signup> {
   final firstnameController = TextEditingController();
   final lastnameController = TextEditingController();
   bool passToggle = true;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+      body: isLoading ? Center(child: Container(
+        height: getheight(context) / 20, width: getwidth(context) / 20,
+        child: CircularProgressIndicator(),),):SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
           height: getheight(context),
@@ -205,7 +211,7 @@ class _signupState extends State<signup> {
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:
-                                BorderSide(color: Colors.blueAccent, width: 1)),
+                            BorderSide(color: Colors.blueAccent, width: 1)),
                         prefixIcon: Icon(
                           Icons.lock,
                           color: Colors.blueAccent,
@@ -304,7 +310,34 @@ class _signupState extends State<signup> {
                     height: 40,
                   ),
                   InkWell(
-                    onTap: (){},
+                    onTap: () {
+                      if (emailController.text.isNotEmpty &&
+                          passController.text.isNotEmpty) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        createAccount(firstnameController.text,
+                            emailController.text, passController.text).then((
+                            user) {
+                          if (user != null) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            print("Login Successfull");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const UserDashboard()));
+                          }
+                          else {
+                            print("Login Failed");
+                          }
+                        });
+                      }
+                      else {
+                        print("Please Enter Feilds");
+                      }
+                    },
                     child: Container(
                       height: 50,
                       width: 200,
@@ -315,17 +348,17 @@ class _signupState extends State<signup> {
                       child: Center(
                         child: loading
                             ? CircularProgressIndicator(
-                                color: Colors.white,
-                              )
+                          color: Colors.white,
+                        )
                             : Text(
-                                'Register',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.0,
-                                  letterSpacing: 0.2,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                          'Register',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            letterSpacing: 0.2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   ),

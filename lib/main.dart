@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:safe_city_project/For%20Testing%20Purpose/authenticate.dart';
 import 'package:safe_city_project/Mobile%20Screens/loginpage.dart';
 import 'firebase_options.dart';
 import 'set_height_and_width.dart';
@@ -37,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
         const Duration(seconds: 2),
         () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (BuildContext context) => loginpage(usernameController: ""))));
+            MaterialPageRoute(builder: (BuildContext context) => authenticate())));
   }
 
   @override
