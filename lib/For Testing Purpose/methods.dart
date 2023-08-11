@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:safe_city_project/For%20Testing%20Purpose/chatroom.dart';
 import 'package:safe_city_project/Mobile%20Screens/loginpage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../Options Screens/Chat.dart';
 
 Future<User?> createAccount(String name, String email, String password) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,6 +16,7 @@ Future<User?> createAccount(String name, String email, String password) async {
         .user;
     if (user != null) {
       print("Account Created Successfully");
+      user.updateProfile(displayName:name );
       await _firestore.collection('users').doc(_auth.currentUser?.uid).set({
         "name":name,
         "email":email,
@@ -64,5 +68,78 @@ Future logOut(BuildContext context) async {
   catch(e){
     print(e);
     return null;
+  }
+}
+
+Widget contact(
+    String urlImage, String title, var time, onOff, String msgs, context) {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
+    child: ListTile(
+      onTap: () async {
+        FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+        // Fetch user data for the tapped contact
+        QuerySnapshot querySnapshot = await _firestore
+            .collection('users')
+            .where('name', isEqualTo: title) // Use the appropriate field for name
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          Map<String, dynamic> userMap = querySnapshot.docs[0].data() as Map<String, dynamic>;
+
+          String roomId = chatRoomId(
+            _auth.currentUser!.displayName.toString(),
+            userMap['name'].toString(),
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => chatroom(chatRoomID: roomId, userMap: userMap),
+            ),
+          );
+        }
+      },
+      leading: Container(
+        height: 50,
+        width: 50,
+        child: ClipOval(
+          child: Image.asset(
+            urlImage,
+            fit: BoxFit.fill,
+          ),
+        ),
+      ),
+      title: Text(title),
+      subtitle: Row(
+        children: [
+          const Icon(
+            Icons.done_all,
+            size: 20,
+            color: Colors.blueAccent,
+          ),
+          const SizedBox(
+            width: 4.0,
+          ),
+          Text(
+            msgs,
+          ),
+        ],
+      ),
+      trailing: Text(time),
+    ),
+  );
+}
+String chatRoomId(String user1 , String user2)
+{
+  if(user1.toLowerCase().codeUnits[0] > user2.toLowerCase().codeUnits[0])
+  {
+    return "$user1$user2";
+  }
+  else
+  {
+    return "$user2$user1";
   }
 }

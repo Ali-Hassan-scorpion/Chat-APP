@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:safe_city_project/For%20Testing%20Purpose/chatroom.dart';
 import 'package:safe_city_project/set_height_and_width.dart';
+
+import '../For Testing Purpose/methods.dart';
 
 void main() {
   runApp(MaterialApp(home: ChatScreen()));
@@ -35,7 +38,6 @@ class _ChatScreenState extends State<ChatScreen> {
       print(userMap);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,15 +252,17 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         }
 
         final userMap = snapshot.data!;
-
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Search result for: $query'),
-              Text('User Data: ${userMap.toString()}'),
-            ],
-          ),
+        return ListView(
+          children: [
+            contact(
+              'assets/images/logo.png', // Replace with actual image path
+              userMap['name'], // Assuming 'displayName' is the user's name
+              userMap['time'].toString(), // Replace with the appropriate time
+              userMap['status'], // Replace with the user's status
+              'hahaha', // Replace with the user's message
+              context,
+            ),
+          ],
         );
       },
     );
@@ -285,11 +289,30 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         return ListView.builder(
           itemCount: suggestions.length,
           itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              title: Text(suggestions[index]),
-              onTap: () {
-                query = suggestions[index]; // Set query and show results
-                showResults(context);
+            final suggestion = suggestions[index];
+            return FutureBuilder(
+              future: getUserData(suggestion),
+              // Replace with your method to fetch user data
+              builder: (BuildContext context,
+                  AsyncSnapshot<Map<String, dynamic>> userSnapshot) {
+                if (userSnapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(); // Return an empty widget while fetching user data
+                }
+
+                if (userSnapshot.hasError) {
+                  return Text('Error: ${userSnapshot.error}');
+                }
+
+                final userMap = userSnapshot.data ?? {};
+                return contact(
+                  'assets/images/logo.png', // Replace with actual image path
+                  userMap['name'] ?? suggestion,
+                  // Use the display name from user data, or the suggestion itself
+                  userMap['time'].toString(), // Replace with the appropriate time
+                  userMap['status'], // Replace with the user's status
+                  'Message', // Replace with the user's message
+                  context,
+                );
               },
             );
           },
@@ -311,6 +334,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
 
     return {};
   }
+
   Future<List<String>> getSuggestions(String query) async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -330,51 +354,23 @@ class CustomSearchDelegate extends SearchDelegate<String> {
     return suggestions;
   }
 
+  Future<Map<String, dynamic>> getUserData(String suggestion) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+    QuerySnapshot snapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: suggestion)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs[0].data() as Map<String, dynamic>;
+    }
+
+    return {};
+  }
 }
 
-Widget contact(
-    String urlImage, String title, var time, onOff, String msgs, context) {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
-    child: ListTile(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => message(urlImage, title, onOff, context)),
-        );
-      },
-      leading: Container(
-        height: 50,
-        width: 50,
-        child: ClipOval(
-          child: Image.asset(
-            urlImage,
-            fit: BoxFit.fill,
-          ),
-        ),
-      ),
-      title: Text(title),
-      subtitle: Row(
-        children: [
-          const Icon(
-            Icons.done_all,
-            size: 20,
-            color: Colors.blueAccent,
-          ),
-          const SizedBox(
-            width: 4.0,
-          ),
-          Text(
-            msgs,
-          ),
-        ],
-      ),
-      trailing: Text(time),
-    ),
-  );
-}
+
 
 Widget message(String urlImage, String title, String onOff, context) {
   return Scaffold(
