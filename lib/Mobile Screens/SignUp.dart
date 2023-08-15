@@ -26,6 +26,7 @@ class _signupState extends State<signup> {
   final passController = TextEditingController();
   final firstnameController = TextEditingController();
   final lastnameController = TextEditingController();
+  final beltController = TextEditingController();
   bool passToggle = true;
   bool isLoading = false;
 
@@ -78,7 +79,7 @@ class _signupState extends State<signup> {
                         //     left: getheight(context) * 0.05,
                         //     right: getwidth(context) * 0.05),
                         child: TextFormField(
-                          style: TextStyle(color: Colors.blueAccent),
+                          style: TextStyle(color: Colors.black),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Field is missing';
@@ -284,7 +285,7 @@ class _signupState extends State<signup> {
                         }
                       },
                       keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
+                      controller: beltController,
                       decoration: InputDecoration(
                           labelText: "Belt Number",
                           labelStyle: TextStyle(
@@ -331,6 +332,9 @@ class _signupState extends State<signup> {
                           }
                           else {
                             print("Login Failed");
+                            setState(() {
+                              isLoading = false;
+                            });
                           }
                         });
                       }

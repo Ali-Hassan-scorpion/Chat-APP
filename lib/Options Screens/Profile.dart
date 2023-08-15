@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:safe_city_project/For%20Testing%20Purpose/methods.dart';
 
@@ -9,10 +11,22 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  FirebaseAuth _auth =FirebaseAuth.instance;
+  late Map<String, dynamic> userMap;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Color.fromRGBO(54, 94, 212, 1.0),
+              Color.fromRGBO(78, 88, 155, 1.0),
+            ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+          ),
+        ),
         title: Text('Profile'),
       ),
       body: Column(
@@ -46,13 +60,13 @@ class _ProfileState extends State<Profile> {
           SizedBox(height: 20),
           Center(
             child: Text(
-              'Shayan Akhtar',
+              _auth.currentUser!.displayName.toString(),
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
           Center(
             child: Text(
-              'shayantanoli38@example.com',
+              _auth.currentUser!.email.toString(),
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ),
@@ -79,7 +93,7 @@ class _ProfileState extends State<Profile> {
                 onPressed: () => logOut(context),
                 icon: Icon(Icons.logout),
                 label: Text('Logout', style: TextStyle(fontSize: 16)),
-                style: ElevatedButton.styleFrom(
+                style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
                   primary: Colors.transparent,
                   elevation: 0,
                 ),

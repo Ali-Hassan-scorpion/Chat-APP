@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:safe_city_project/For%20Testing%20Purpose/chatroom.dart';
+import 'package:safe_city_project/Options%20Screens/Profile.dart';
 import 'package:safe_city_project/set_height_and_width.dart';
 
 import '../For Testing Purpose/methods.dart';
@@ -38,20 +38,17 @@ class _ChatScreenState extends State<ChatScreen> {
       print(userMap);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromRGBO(120, 149, 203, 1),
-                Color.fromRGBO(74, 85, 162, 1),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            gradient: LinearGradient(colors: [
+              Color.fromRGBO(54, 94, 212, 1.0),
+              Color.fromRGBO(78, 88, 155, 1.0),
+            ], begin: Alignment.topLeft, end: Alignment.bottomRight),
           ),
         ),
         title: Text('ICT Police TalkHub'),
@@ -65,9 +62,16 @@ class _ChatScreenState extends State<ChatScreen> {
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return [
-                PopupMenuItem(child: Text('Option 1')),
-                PopupMenuItem(child: Text('Option 2')),
-                // Add more options as needed
+                PopupMenuItem(
+                    child: InkWell(
+                  child: Text("Profile"),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => Profile()));
+                  },
+                )),
               ];
             },
           ),
@@ -82,115 +86,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: CircularProgressIndicator(),
               ),
             )
-          : Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      contact(
-                        'assets/images/logo.png',
-                        'Ayoub',
-                        '19:30',
-                        'online',
-                        'Chokran bezaf khouya',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'Anas',
-                        '10:05',
-                        'online',
-                        'Inchaalah nji andek...',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'Hamid',
-                        '18:20',
-                        'online',
-                        'Merci beaucoup frero',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'yassine',
-                        '12:10',
-                        'online',
-                        'Thank so much for your help',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'Ayman',
-                        '16:45',
-                        'online',
-                        'Am in the way, just 5 min...',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'Achraf',
-                        '19:30',
-                        'online',
-                        'Fin nta db, ana f casa...',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'Hamza',
-                        'Yesterday',
-                        'online',
-                        'Can you explain to me ?',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'youssef',
-                        'Yesterday',
-                        'online',
-                        'Salam alaykom...',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'Mohamed',
-                        'Yesterday',
-                        'online',
-                        'Lktab lakhor zwin bezaf',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'tariq',
-                        '4/23/22',
-                        'online',
-                        'Wach chritiha men tema',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'Adam',
-                        '4/23/22',
-                        'online',
-                        'Kif halek bikhir, kolchi mzn',
-                        context,
-                      ),
-                      contact(
-                        'assets/images/logo.png',
-                        'Islam',
-                        '4/23/22',
-                        'online',
-                        'It\'s a great story',
-                        context,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+          : Container(
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        backgroundColor: Color.fromRGBO(120, 149, 203, 1),
+        backgroundColor: Color.fromRGBO(44, 97, 190, 0.9490196078431372),
         child: const Icon(
           Icons.chat,
         ),
@@ -225,44 +125,37 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     if (query.isEmpty) {
-      return Center(
-        child: Text('Please enter a search query'),
-      );
+      return Container(); // Return an empty container when query is empty
     }
 
     return FutureBuilder(
-      future: onSearch(query),
-      builder:
-          (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+      future: searchUsersByEmail(query),
+      // Replace with your method to search users by email
+      builder: (BuildContext context,
+          AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return CircularProgressIndicator(); // Show a loading indicator while fetching results
         }
+
         if (snapshot.hasError) {
-          return Center(
-            child: Text('Error: ${snapshot.error}'),
-          );
+          return Text('Error: ${snapshot.error}');
         }
 
-        if (!snapshot.hasData || snapshot.data == null) {
-          return Center(
-            child: Text('No results found'),
-          );
-        }
+        final searchResults = snapshot.data ?? [];
 
-        final userMap = snapshot.data!;
-        return ListView(
-          children: [
-            contact(
+        return ListView.builder(
+          itemCount: searchResults.length,
+          itemBuilder: (BuildContext context, int index) {
+            final result = searchResults[index];
+            return contact(
               'assets/images/logo.png', // Replace with actual image path
-              userMap['name'], // Assuming 'displayName' is the user's name
-              userMap['time'].toString(), // Replace with the appropriate time
-              userMap['status'], // Replace with the user's status
-              'hahaha', // Replace with the user's message
+              result['name'], // Assuming 'name' is the user's name
+              result['time'].toString(), // Replace with the appropriate time
+              result['status'], // Replace with the user's status
+              'Message', // Replace with the user's message
               context,
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -308,7 +201,8 @@ class CustomSearchDelegate extends SearchDelegate<String> {
                   'assets/images/logo.png', // Replace with actual image path
                   userMap['name'] ?? suggestion,
                   // Use the display name from user data, or the suggestion itself
-                  userMap['time'].toString(), // Replace with the appropriate time
+                  userMap['time'].toString(),
+                  // Replace with the appropriate time
                   userMap['status'], // Replace with the user's status
                   'Message', // Replace with the user's message
                   context,
@@ -350,8 +244,26 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         suggestions.add(email);
       }
     }
-
     return suggestions;
+  }
+
+  Future<List<Map<String, dynamic>>> searchUsersByEmail(String query) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot snapshot = await _firestore
+        .collection('users')
+        .where('email', isGreaterThanOrEqualTo: query)
+        .get();
+
+    List<Map<String, dynamic>> searchResults = [];
+    for (var doc in snapshot.docs) {
+      if (doc['email'].startsWith(query)) {
+        var userMap = doc.data() as Map<String, dynamic>;
+        searchResults.add(userMap);
+      }
+    }
+
+    return searchResults;
   }
 
   Future<Map<String, dynamic>> getUserData(String suggestion) async {
@@ -369,8 +281,6 @@ class CustomSearchDelegate extends SearchDelegate<String> {
     return {};
   }
 }
-
-
 
 Widget message(String urlImage, String title, String onOff, context) {
   return Scaffold(
