@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:safe_city_project/Options%20Screens/Profile.dart';
 import 'package:safe_city_project/set_height_and_width.dart';
@@ -16,13 +17,14 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   bool isLoading = false;
   late Map<String, dynamic> userMap;
   final TextEditingController _search = TextEditingController();
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   void onSearchh() async {
-    FirebaseFirestore _firestore = FirebaseFirestore.instance;
     setState(() {
       isLoading = true;
     });
@@ -38,6 +40,32 @@ class _ChatScreenState extends State<ChatScreen> {
       print(userMap);
     });
   }
+
+  void setStatus(String status) async {
+    await _firestore.collection('users').doc(_auth.currentUser?.uid).update(
+        {
+          'status':status
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    setStatus('Online');
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setStatus('Online');
+    } else if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      setStatus('Offline');
+    } else {
+      setStatus('Offline');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +92,14 @@ class _ChatScreenState extends State<ChatScreen> {
               return [
                 PopupMenuItem(
                     child: InkWell(
-                  child: Text("Profile"),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => Profile()));
-                  },
-                )),
+                      child: Text("Profile"),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => Profile()));
+                      },
+                    )),
               ];
             },
           ),
@@ -80,14 +108,13 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: isLoading
           ? Center(
-              child: Container(
-                height: getheight(context) / 20,
-                width: getwidth(context) / 20,
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : Container(
-            ),
+        child: Container(
+          height: getheight(context) / 20,
+          width: getwidth(context) / 20,
+          child: CircularProgressIndicator(),
+        ),
+      )
+          : Container(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Color.fromRGBO(44, 97, 190, 0.9490196078431372),
@@ -150,9 +177,9 @@ class CustomSearchDelegate extends SearchDelegate<String> {
             return contact(
               'assets/images/logo.png', // Replace with actual image path
               result['name'], // Assuming 'name' is the user's name
-              result['time'].toString(), // Replace with the appropriate time
+              result['status'], // Replace with the appropriate time
               result['status'], // Replace with the user's status
-              'Message', // Replace with the user's message
+              result['email'], // Replace with the user's message
               context,
             );
           },
@@ -201,10 +228,10 @@ class CustomSearchDelegate extends SearchDelegate<String> {
                   'assets/images/logo.png', // Replace with actual image path
                   userMap['name'] ?? suggestion,
                   // Use the display name from user data, or the suggestion itself
-                  userMap['time'].toString(),
+                  userMap['status'],
                   // Replace with the appropriate time
                   userMap['status'], // Replace with the user's status
-                  'Message', // Replace with the user's message
+                  userMap['email'], // Replace with the user's message
                   context,
                 );
               },
@@ -358,7 +385,7 @@ class ChatMess extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor:
-          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
       axisAlignment: 0.0,
       child: Container(
         padding: const EdgeInsets.all(8.0),
@@ -441,7 +468,7 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
                   hintText: 'Message',
                   hintStyle: const TextStyle(fontSize: 20, color: Colors.grey),
                   suffixIconConstraints:
-                      const BoxConstraints(minWidth: 80, maxWidth: 100),
+                  const BoxConstraints(minWidth: 80, maxWidth: 100),
                   suffixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: const [
@@ -469,20 +496,20 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
             child: IconButton(
               icon: _textController.text == ''
                   ? const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
-                      child: Icon(
-                        Icons.mic,
-                        color: Colors.white,
-                      ))
+                  radius: 30,
+                  backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
+                  child: Icon(
+                    Icons.mic,
+                    color: Colors.white,
+                  ))
                   : const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
-                      child: Icon(
-                        Icons.send,
-                        color: Colors.white,
-                      ),
-                    ),
+                radius: 30,
+                backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
+                child: Icon(
+                  Icons.send,
+                  color: Colors.white,
+                ),
+              ),
               onPressed: () => _handleSubmitted(_textController.text),
             ),
           ),

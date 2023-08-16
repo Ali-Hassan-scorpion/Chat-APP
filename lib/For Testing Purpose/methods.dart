@@ -21,7 +21,7 @@ Future<User?> createAccount(String name, String email, String password) async {
       await _firestore
           .collection('users')
           .doc(_auth.currentUser?.uid)
-          .set({"name": name, "email": email, "status": "Unavailable"});
+          .set({"name": name, "email": email, "status": "Unavailable",'uid':_auth.currentUser?.uid});
       return user;
     } else {
       print("Account Creation Failed");
@@ -124,14 +124,14 @@ Widget contact(
       title: Text(title),
       subtitle: Row(
         children: [
-          const Icon(
-            Icons.done_all,
-            size: 20,
-            color: Colors.blueAccent,
-          ),
-          const SizedBox(
-            width: 4.0,
-          ),
+          // const Icon(
+          //   Icons.done_all,
+          //   size: 20,
+          //   color: Colors.blueAccent,
+          // ),
+          // const SizedBox(
+          //   width: 4.0,
+          // ),
           Text(
             msgs,
           ),
@@ -149,4 +149,3 @@ String chatRoomId(String user1, String user2) {
     return "$user2$user1";
   }
 }
-

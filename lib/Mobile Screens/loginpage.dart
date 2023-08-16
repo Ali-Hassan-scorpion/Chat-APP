@@ -48,11 +48,11 @@ class _loginpageState extends State<loginpage> {
     return Scaffold(
       body: Container(
         height: getheight(context),
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage("assets/images/whitebackground.png"),
-          fit: BoxFit.cover,
-        )),
+        // decoration: const BoxDecoration(
+        //     image: DecorationImage(
+        //   image: AssetImage("assets/images/whitebackground.png"),
+        //   fit: BoxFit.cover,
+        // )),
         child: SingleChildScrollView(
           child: Form(
             key: _formfield,
