@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:safe_city_project/Options%20Screens/Profile.dart';
-import 'package:safe_city_project/set_height_and_width.dart';
-
 import '../For Testing Purpose/methods.dart';
 
 void main() {
@@ -24,6 +22,66 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
 
+  Stream<List<Map<String, dynamic>>> _getContactsWithConversationsStream() async* {
+    final currentUserUid = _auth.currentUser!.displayName;
+    Stream<QuerySnapshot> snapshotStream =
+    _firestore.collection('users').snapshots();
+
+    await for (QuerySnapshot snapshot in snapshotStream) {
+      List<Map<String, dynamic>> contacts = [];
+      for (var doc in snapshot.docs) {
+        final otherUserUid = doc['name'];
+          final conversationExists =
+          await doesConversationExist(currentUserUid!, otherUserUid);
+          if (conversationExists) {
+            contacts.add(doc.data() as Map<String, dynamic>);
+        }
+      }
+      yield contacts;
+    }
+  }
+
+  Future<bool> doesConversationExist(String user1, String user2) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('chatroom')
+        .doc(chatRoomId(user1, user2))
+        .collection('chats')
+        .limit(1)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<List<Map<String, dynamic>>> getContacts() async {
+    String currentUserUid = _auth.currentUser!.uid;
+
+    QuerySnapshot snapshot = await _firestore
+        .collection('chatroom')
+        .where('users', arrayContains: currentUserUid)
+        .get();
+
+    List<Map<String, dynamic>> contacts = [];
+
+    for (var doc in snapshot.docs) {
+      List<dynamic> users = doc['users'];
+
+      for (var userUid in users) {
+        if (userUid != currentUserUid) {
+          DocumentSnapshot userSnapshot =
+              await _firestore.collection('users').doc(userUid).get();
+
+          if (userSnapshot.exists) {
+            Map<String, dynamic> userMap =
+                userSnapshot.data() as Map<String, dynamic>;
+            contacts.add(userMap);
+          }
+        }
+      }
+    }
+
+    return contacts;
+  }
+
   void onSearchh() async {
     setState(() {
       isLoading = true;
@@ -42,10 +100,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   void setStatus(String status) async {
-    await _firestore.collection('users').doc(_auth.currentUser?.uid).update(
-        {
-          'status':status
-        });
+    await _firestore
+        .collection('users')
+        .doc(_auth.currentUser?.uid)
+        .update({'status': status});
   }
 
   @override
@@ -59,13 +117,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       setStatus('Online');
-    } else if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+    } else if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
       setStatus('Offline');
     } else {
       setStatus('Offline');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,32 +150,60 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
               return [
                 PopupMenuItem(
                     child: InkWell(
-                      child: Text("Profile"),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) => Profile()));
-                      },
-                    )),
+                  child: Text("Profile"),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => Profile()));
+                  },
+                )),
               ];
             },
           ),
         ],
         elevation: 0, // Remove the elevation from the AppBar
       ),
-      body: isLoading
-          ? Center(
-        child: Container(
-          height: getheight(context) / 20,
-          width: getwidth(context) / 20,
-          child: CircularProgressIndicator(),
-        ),
-      )
-          : Container(),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _getContactsWithConversationsStream(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator(color: Color.fromRGBO(54, 94, 212, 1.0),));
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          final List contacts = snapshot.data ?? [];
+
+          if (contacts.isEmpty) {
+            return Center(child: Text('No conversations yet.'));
+          }
+
+          return ListView.builder(
+            itemCount: contacts.length,
+            itemBuilder: (BuildContext context, int index) {
+              final chattedContacts = contacts[index];
+              return contact(
+                'assets/images/logo.png', // Replace with actual image path
+                chattedContacts['name'],
+                // Replace with the appropriate name field
+                chattedContacts['status'],
+                // Replace with the appropriate status field
+                chattedContacts['status'],
+                chattedContacts['email'],
+                // Replace with the appropriate lastMessage field
+                context,
+              );
+            },
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        backgroundColor: Color.fromRGBO(44, 97, 190, 0.9490196078431372),
+        backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
         child: const Icon(
           Icons.chat,
         ),
@@ -161,7 +247,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       builder: (BuildContext context,
           AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // Show a loading indicator while fetching results
+          return Center(child: CircularProgressIndicator(color: Color.fromRGBO(54, 94, 212, 1.0),)); // Show a loading indicator while fetching results
         }
 
         if (snapshot.hasError) {
@@ -197,7 +283,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       future: getSuggestions(query),
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // Show a loading indicator while fetching suggestions
+          return Center(child: CircularProgressIndicator(color: Color.fromRGBO(54, 94, 212, 1.0),)); // Show a loading indicator while fetching suggestions
         }
 
         if (snapshot.hasError) {
@@ -385,7 +471,7 @@ class ChatMess extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor:
-      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
       axisAlignment: 0.0,
       child: Container(
         padding: const EdgeInsets.all(8.0),
@@ -468,7 +554,7 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
                   hintText: 'Message',
                   hintStyle: const TextStyle(fontSize: 20, color: Colors.grey),
                   suffixIconConstraints:
-                  const BoxConstraints(minWidth: 80, maxWidth: 100),
+                      const BoxConstraints(minWidth: 80, maxWidth: 100),
                   suffixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: const [
@@ -496,20 +582,20 @@ class _ChatScrState extends State<ChatScr> with TickerProviderStateMixin {
             child: IconButton(
               icon: _textController.text == ''
                   ? const CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
-                  child: Icon(
-                    Icons.mic,
-                    color: Colors.white,
-                  ))
+                      radius: 30,
+                      backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.white,
+                      ))
                   : const CircleAvatar(
-                radius: 30,
-                backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
-                child: Icon(
-                  Icons.send,
-                  color: Colors.white,
-                ),
-              ),
+                      radius: 30,
+                      backgroundColor: Color.fromRGBO(120, 149, 203, 0.95),
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                      ),
+                    ),
               onPressed: () => _handleSubmitted(_textController.text),
             ),
           ),

@@ -1,18 +1,15 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:safe_city_project/For%20Testing%20Purpose/methods.dart';
 import 'package:safe_city_project/set_height_and_width.dart';
 import 'package:uuid/uuid.dart';
 
 class chatroom extends StatefulWidget {
   final Map<String, dynamic> userMap;
   final String chatRoomID;
-
   chatroom({required this.chatRoomID, required this.userMap});
 
   @override
@@ -26,6 +23,9 @@ class _chatroomstate extends State<chatroom> {
   bool isSendIconVisible = false;
   final FocusNode _focusnode = FocusNode();
   File? imageFile;
+
+  final ScrollController _scrollController = ScrollController();
+
 
   Future getImage() async {
     ImagePicker _picker = ImagePicker();
@@ -165,6 +165,9 @@ class _chatroomstate extends State<chatroom> {
             child: Column(
               children: [
                 Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(alignment: Alignment.center,
+                          image: AssetImage('assets/images/logo.png'),opacity: 0.1,scale: 0.1)),
                   height: constraints.maxHeight * 0.88,
                   width: constraints.maxWidth,
                   child: StreamBuilder<QuerySnapshot>(
@@ -174,15 +177,22 @@ class _chatroomstate extends State<chatroom> {
                         .collection('chats')
                         .orderBy('time', descending: false)
                         .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData) {
+                        WidgetsBinding.instance!.addPostFrameCallback((_) {
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                        });
+
                         return ListView.builder(
-                          itemCount: snapshot.data!.docs.length,
+                          controller: _scrollController,
+                          itemCount: snapshot.data!.docs.length, // Show latest messages at the bottom
                           itemBuilder: (context, index) {
                             Map<String, dynamic>? map =
-                                snapshot.data?.docs[index].data()
-                                    as Map<String, dynamic>?;
+                            snapshot.data?.docs[index].data() as Map<String, dynamic>?;
                             return messages(context, map!);
                           },
                         );
@@ -190,7 +200,8 @@ class _chatroomstate extends State<chatroom> {
                         return Container();
                       }
                     },
-                  ),
+                  )
+
                 ),
                 Container(
                   height: constraints.maxHeight * 0.1,
@@ -313,6 +324,7 @@ class _chatroomstate extends State<chatroom> {
             ),
           )
         : Container(
+            margin: EdgeInsets.all(5),
             height: getheight(context) / 2.5,
             width: getwidth(context),
             alignment: map['sendby'] == _auth.currentUser?.displayName
@@ -331,7 +343,7 @@ class _chatroomstate extends State<chatroom> {
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     // if (snapshot.connectionState == ConnectionState.waiting) {
                     //   return CircularProgressIndicator();}
-                      if (snapshot.hasError) {
+                    if (snapshot.hasError) {
                       return Text('Error loading image');
                     } else if (snapshot.hasData) {
                       return Image.network(snapshot.data!);

@@ -18,10 +18,12 @@ Future<User?> createAccount(String name, String email, String password) async {
     if (user != null) {
       print("Account Created Successfully");
       user.updateProfile(displayName: name);
-      await _firestore
-          .collection('users')
-          .doc(_auth.currentUser?.uid)
-          .set({"name": name, "email": email, "status": "Unavailable",'uid':_auth.currentUser?.uid});
+      await _firestore.collection('users').doc(_auth.currentUser?.uid).set({
+        "name": name,
+        "email": email,
+        "status": "Unavailable",
+        'uid': _auth.currentUser?.uid
+      });
       return user;
     } else {
       print("Account Creation Failed");
@@ -148,4 +150,23 @@ String chatRoomId(String user1, String user2) {
   } else {
     return "$user2$user1";
   }
+}
+
+Future<List<Map<String, dynamic>>> fetchContacts() async {
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  QuerySnapshot snapshot = await _firestore
+      .collection('chatroom')
+      .where('chatRoomId', arrayContains: _auth.currentUser?.displayName)
+      .get();
+
+  List<Map<String, dynamic>> results = [];
+
+  for (var doc in snapshot.docs) {
+    var userMap = doc.data() as Map<String, dynamic>;
+    results.add(userMap);
+  }
+
+  return results;
 }

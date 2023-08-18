@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:safe_city_project/Mobile%20Screens/UserDashboard.dart';
 import '../set_height_and_width.dart';
 import 'SignUp.dart';
+import 'package:get/get.dart';
 
 class loginpage extends StatefulWidget {
   final String usernameController;
@@ -72,7 +73,7 @@ class _loginpageState extends State<loginpage> {
                     Text(
                       'Islamabad Police',
                       style: TextStyle(
-                          color: Colors.blueAccent,
+                          color: Color.fromRGBO(54, 94, 212, 1.0),
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1),
@@ -98,21 +99,21 @@ class _loginpageState extends State<loginpage> {
                     decoration: InputDecoration(
                         labelText: "Email",
                         labelStyle: const TextStyle(
-                          color: Colors.blueAccent,
+                          color: Color.fromRGBO(54, 94, 212, 1.0),
                         ),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: const BorderSide(
-                              color: Colors.blueAccent,
+                              color: Color.fromRGBO(54, 94, 212, 1.0),
                               width: 2,
                             )),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: const BorderSide(
-                                color: Colors.blueAccent, width: 1)),
+                                color: Color.fromRGBO(54, 94, 212, 1.0), width: 1)),
                         prefixIcon: const Icon(
                           Icons.email,
-                          color: Colors.blueAccent,
+                          color: Color.fromRGBO(54, 94, 212, 1.0),
                         )),
                   ),
                 ),
@@ -138,21 +139,21 @@ class _loginpageState extends State<loginpage> {
                     decoration: InputDecoration(
                       labelText: "Password",
                       labelStyle: const TextStyle(
-                        color: Colors.blueAccent,
+                        color: Color.fromRGBO(54, 94, 212, 1.0),
                       ),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: const BorderSide(
-                            color: Colors.blueAccent,
+                            color: Color.fromRGBO(54, 94, 212, 1.0),
                             width: 2,
                           )),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: const BorderSide(
-                              color: Colors.blueAccent, width: 1)),
+                              color: Color.fromRGBO(54, 94, 212, 1.0), width: 1)),
                       prefixIcon: const Icon(
                         Icons.lock,
-                        color: Colors.blueAccent,
+                        color: Color.fromRGBO(54, 94, 212, 1.0),
                       ),
                       suffixIcon: InkWell(
                         onTap: () {
@@ -162,7 +163,7 @@ class _loginpageState extends State<loginpage> {
                         },
                         child: Icon(
                           passToggle ? Icons.visibility : Icons.visibility_off,
-                          color: Colors.blueAccent,
+                          color: Color.fromRGBO(54, 94, 212, 1.0),
                         ),
                       ),
                     ),
@@ -192,7 +193,7 @@ class _loginpageState extends State<loginpage> {
                     width: 180,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.blueAccent,
+                      color: Color.fromRGBO(54, 94, 212, 1.0),
                     ),
                     child: Center(
                       child: loading
@@ -217,7 +218,7 @@ class _loginpageState extends State<loginpage> {
                     const Text(
                       "Don't have an account?",
                       style: TextStyle(
-                        color: Colors.blue,
+                        color: Color.fromRGBO(54, 94, 212, 1.0),
                       ),
                     ),
                     SizedBox(
@@ -226,15 +227,16 @@ class _loginpageState extends State<loginpage> {
                         child: const Text(
                           'Signup',
                           style: TextStyle(
-                              color: Colors.blueAccent,
+                              color: Color.fromRGBO(54, 94, 212, 1.0),
                               fontWeight: FontWeight.bold),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const signup()));
+                          Get.snackbar('Alert','Only Admins');
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (BuildContext context) =>
+                          //             const signup()));
                         },
                       ),
                     ),
@@ -277,7 +279,7 @@ class _loginpageState extends State<loginpage> {
             Text(
               'Powered By Safe City',
               style: TextStyle(
-                color: Colors.blueAccent,
+                color: Color.fromRGBO(54, 94, 212, 1.0),
                 fontSize: 14.0,
                 fontWeight: FontWeight.bold,
               ),

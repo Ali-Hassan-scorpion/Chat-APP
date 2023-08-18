@@ -45,7 +45,7 @@ class _UserDashboardState extends State<UserDashboard> {
                   Text(
                     'Islamabad Police',
                     style: TextStyle(
-                        color: Colors.blueAccent,
+                        color: Color.fromRGBO(54, 94, 212, 1.0),
                         fontSize: 35,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1),
@@ -57,7 +57,7 @@ class _UserDashboardState extends State<UserDashboard> {
               child: Text(
                 "Main Menu",
                 style: TextStyle(
-                    color: Colors.blueAccent, fontSize: 18, letterSpacing: 2),
+                    color: Color.fromRGBO(54, 94, 212, 1.0), fontSize: 18, letterSpacing: 2),
               ),
             ),
             Expanded(
@@ -137,7 +137,7 @@ class _UserDashboardState extends State<UserDashboard> {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.blueAccent,
+                                      color: Color.fromRGBO(54, 94, 212, 1.0),
                                     ),
                                   ),
                                 ),
@@ -173,7 +173,7 @@ class _UserDashboardState extends State<UserDashboard> {
             Text(
               'Powered By Safe City',
               style: TextStyle(
-                color: Colors.blueAccent,
+                color: Color.fromRGBO(54, 94, 212, 1.0),
                 fontSize: 14.0,
                 fontWeight: FontWeight.bold,
               ),
