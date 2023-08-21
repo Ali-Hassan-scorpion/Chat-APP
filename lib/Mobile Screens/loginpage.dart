@@ -110,7 +110,8 @@ class _loginpageState extends State<loginpage> {
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide: const BorderSide(
-                                color: Color.fromRGBO(54, 94, 212, 1.0), width: 1)),
+                                color: Color.fromRGBO(54, 94, 212, 1.0),
+                                width: 1)),
                         prefixIcon: const Icon(
                           Icons.email,
                           color: Color.fromRGBO(54, 94, 212, 1.0),
@@ -150,7 +151,8 @@ class _loginpageState extends State<loginpage> {
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: const BorderSide(
-                              color: Color.fromRGBO(54, 94, 212, 1.0), width: 1)),
+                              color: Color.fromRGBO(54, 94, 212, 1.0),
+                              width: 1)),
                       prefixIcon: const Icon(
                         Icons.lock,
                         color: Color.fromRGBO(54, 94, 212, 1.0),
@@ -231,7 +233,7 @@ class _loginpageState extends State<loginpage> {
                               fontWeight: FontWeight.bold),
                         ),
                         onPressed: () {
-                          Get.snackbar('Alert','Only Admins');
+                          Get.snackbar('Alert', 'Only Admins');
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(

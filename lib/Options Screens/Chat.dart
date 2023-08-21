@@ -205,7 +205,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         onPressed: () {},
         backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
         child: const Icon(
-          Icons.chat,
+          Icons.group_add,
         ),
       ),
     );

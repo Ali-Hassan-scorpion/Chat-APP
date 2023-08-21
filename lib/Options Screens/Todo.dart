@@ -11,7 +11,7 @@ class _TodoState extends State<Todo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("TODO Screen")),
+      body: Center(child: Text("In Progress")),
     );
   }
 }

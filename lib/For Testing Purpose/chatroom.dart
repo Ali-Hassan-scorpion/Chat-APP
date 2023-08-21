@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 class chatroom extends StatefulWidget {
   final Map<String, dynamic> userMap;
   final String chatRoomID;
+
   chatroom({required this.chatRoomID, required this.userMap});
 
   @override
@@ -25,7 +26,6 @@ class _chatroomstate extends State<chatroom> {
   File? imageFile;
 
   final ScrollController _scrollController = ScrollController();
-
 
   Future getImage() async {
     ImagePicker _picker = ImagePicker();
@@ -165,44 +165,48 @@ class _chatroomstate extends State<chatroom> {
             child: Column(
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(alignment: Alignment.center,
-                          image: AssetImage('assets/images/logo.png'),opacity: 0.1,scale: 0.1)),
-                  height: constraints.maxHeight * 0.88,
-                  width: constraints.maxWidth,
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: _firestore
-                        .collection('chatroom')
-                        .doc(widget.chatRoomID)
-                        .collection('chats')
-                        .orderBy('time', descending: false)
-                        .snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        WidgetsBinding.instance!.addPostFrameCallback((_) {
-                          _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            alignment: Alignment.center,
+                            image: AssetImage('assets/images/logo.png'),
+                            opacity: 0.1,
+                            scale: 0.1)),
+                    height: constraints.maxHeight * 0.88,
+                    width: constraints.maxWidth,
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: _firestore
+                          .collection('chatroom')
+                          .doc(widget.chatRoomID)
+                          .collection('chats')
+                          .orderBy('time', descending: false)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          WidgetsBinding.instance!.addPostFrameCallback((_) {
+                            _scrollController.animateTo(
+                              _scrollController.position.maxScrollExtent,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          });
+
+                          return ListView.builder(
+                            controller: _scrollController,
+                            itemCount: snapshot.data!.docs.length,
+                            // Show latest messages at the bottom
+                            itemBuilder: (context, index) {
+                              Map<String, dynamic>? map =
+                                  snapshot.data?.docs[index].data()
+                                      as Map<String, dynamic>?;
+                              return messages(context, map!);
+                            },
                           );
-                        });
-
-                        return ListView.builder(
-                          controller: _scrollController,
-                          itemCount: snapshot.data!.docs.length, // Show latest messages at the bottom
-                          itemBuilder: (context, index) {
-                            Map<String, dynamic>? map =
-                            snapshot.data?.docs[index].data() as Map<String, dynamic>?;
-                            return messages(context, map!);
-                          },
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  )
-
-                ),
+                        } else {
+                          return Container();
+                        }
+                      },
+                    )),
                 Container(
                   height: constraints.maxHeight * 0.1,
                   width: constraints.maxWidth,
