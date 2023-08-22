@@ -23,23 +23,43 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Stream<List<Map<String, dynamic>>> _getContactsWithConversationsStream() async* {
-    final currentUserUid = _auth.currentUser!.displayName;
-    Stream<QuerySnapshot> snapshotStream =
-    _firestore.collection('users').snapshots();
+    final currentUserUid = _auth.currentUser!.uid;
+    Stream<QuerySnapshot> snapshotStream = _firestore.collection('users').snapshots();
 
     await for (QuerySnapshot snapshot in snapshotStream) {
       List<Map<String, dynamic>> contacts = [];
       for (var doc in snapshot.docs) {
-        final otherUserUid = doc['name'];
-          final conversationExists =
-          await doesConversationExist(currentUserUid!, otherUserUid);
-          if (conversationExists) {
-            contacts.add(doc.data() as Map<String, dynamic>);
+        final otherUserUid = doc['uid'];
+        final conversationExists = await doesConversationExist(currentUserUid, otherUserUid);
+        if (conversationExists) {
+          // Fetch the latest message timestamp for this conversation
+          final latestMessageSnapshot = await FirebaseFirestore.instance
+              .collection('chatroom')
+              .doc(chatRoomId(currentUserUid, otherUserUid))
+              .collection('chats')
+              .orderBy('time', descending: true)
+              .limit(1)
+              .get();
+
+          final latestMessageTime = latestMessageSnapshot.docs.isNotEmpty
+              ? latestMessageSnapshot.docs[0]['time']
+              : null;
+
+          // Add the contact with latest message timestamp
+          contacts.add({
+            ...doc.data() as Map<String, dynamic>,
+            'latestMessageTime': latestMessageTime,
+          });
         }
       }
+
+      // Sort the contacts based on latest message timestamp
+      contacts.sort((a, b) => (b['latestMessageTime'] ?? 0).compareTo(a['latestMessageTime'] ?? 0));
+
       yield contacts;
     }
   }
+
 
   Future<bool> doesConversationExist(String user1, String user2) async {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -166,17 +186,16 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       ),
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: _getContactsWithConversationsStream(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator(color: Color.fromRGBO(54, 94, 212, 1.0),));
+            return Center(child: CircularProgressIndicator(color: Color.fromRGBO(54, 94, 212, 1.0)));
           }
 
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          final List contacts = snapshot.data ?? [];
+          final List<Map<String, dynamic>> contacts = snapshot.data ?? [];
 
           if (contacts.isEmpty) {
             return Center(child: Text('No conversations yet.'));
@@ -201,6 +220,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           );
         },
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),

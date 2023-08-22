@@ -310,12 +310,12 @@ class _chatroomstate extends State<chatroom> {
               margin: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
               decoration: map['sendby'] == _auth.currentUser!.displayName
                   ? BoxDecoration(
-                      color: Color.fromRGBO(44, 97, 190, 0.9490196078431372),
+                      color: Color.fromRGBO(63, 55, 201, 0.9490196078431372),
                       borderRadius: BorderRadius.circular(15),
                     )
                   : BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      color: Color.fromRGBO(44, 97, 190, 0.9490196078431372),
+                      color: Color.fromRGBO(67, 97, 238, 0.9490196078431372),
                     ),
               child: Text(
                 map['message'],

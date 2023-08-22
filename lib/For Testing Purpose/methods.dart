@@ -100,8 +100,8 @@ Widget contact(
               querySnapshot.docs[0].data() as Map<String, dynamic>;
 
           String roomId = chatRoomId(
-            _auth.currentUser!.displayName.toString(),
-            userMap['name'].toString(),
+            _auth.currentUser!.uid.toString(),
+            userMap['uid'].toString(),
           );
 
           Navigator.push(
@@ -158,7 +158,7 @@ Future<List<Map<String, dynamic>>> fetchContacts() async {
 
   QuerySnapshot snapshot = await _firestore
       .collection('chatroom')
-      .where('chatRoomId', arrayContains: _auth.currentUser?.displayName)
+      .where('chatRoomId', arrayContains: _auth.currentUser?.uid)
       .get();
 
   List<Map<String, dynamic>> results = [];
