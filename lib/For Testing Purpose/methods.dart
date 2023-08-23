@@ -152,21 +152,21 @@ String chatRoomId(String user1, String user2) {
   }
 }
 
-Future<List<Map<String, dynamic>>> fetchContacts() async {
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  FirebaseAuth _auth = FirebaseAuth.instance;
-
-  QuerySnapshot snapshot = await _firestore
-      .collection('chatroom')
-      .where('chatRoomId', arrayContains: _auth.currentUser?.uid)
-      .get();
-
-  List<Map<String, dynamic>> results = [];
-
-  for (var doc in snapshot.docs) {
-    var userMap = doc.data() as Map<String, dynamic>;
-    results.add(userMap);
-  }
-
-  return results;
-}
+// Future<List<Map<String, dynamic>>> fetchContacts() async {
+//   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+//   FirebaseAuth _auth = FirebaseAuth.instance;
+//
+//   QuerySnapshot snapshot = await _firestore
+//       .collection('chatroom')
+//       .where('chatRoomId', arrayContains: _auth.currentUser?.uid)
+//       .get();
+//
+//   List<Map<String, dynamic>> results = [];
+//
+//   for (var doc in snapshot.docs) {
+//     var userMap = doc.data() as Map<String, dynamic>;
+//     results.add(userMap);
+//   }
+//
+//   return results;
+// }
