@@ -26,6 +26,7 @@ class _ChatScreenState extends State<ChatScreen>
   FirebaseAuth _auth = FirebaseAuth.instance;
   late TabController _tabController;
   StreamSubscription<List<Map<String, dynamic>>>? _streamSubscription;
+  bool isChatTabSelected=true;
 
   // Stream<List<Map<String, dynamic>>>
   //     _getContactsWithConversationsStream() async* {
@@ -138,6 +139,7 @@ class _ChatScreenState extends State<ChatScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _tabController.addListener(_handleTabChange);
     WidgetsBinding.instance.addObserver(this);
     setStatus('Online');
   }
@@ -147,6 +149,12 @@ class _ChatScreenState extends State<ChatScreen>
     _tabController.dispose();
     _streamSubscription?.cancel();
     super.dispose();
+  }
+
+  void _handleTabChange() {
+    setState(() {
+      isChatTabSelected = _tabController.index == 0;
+    });
   }
 
   @override
@@ -254,15 +262,19 @@ class _ChatScreenState extends State<ChatScreen>
         //     );
         //   },
         // ),
-        Center(
-          child: Text("Groups"),
-        )
+        YourGroupTab(),
       ]),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: isChatTabSelected?FloatingActionButton(
         onPressed: () {},
         backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
-        child: const Icon(
-          Icons.group_add,
+        child: Icon(
+           Icons.chat,
+        ),
+      ):FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
+        child: Icon(
+          Icons.group_add_rounded,
         ),
       ),
     );
@@ -597,6 +609,23 @@ class ContactsManager {
     }
   }
 }
+
+class YourGroupTab extends StatefulWidget {
+  const YourGroupTab({super.key});
+
+  @override
+  State<YourGroupTab> createState() => _YourGroupTabState();
+}
+
+class _YourGroupTabState extends State<YourGroupTab> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(child: Text("Groups")),
+    );
+  }
+}
+
 // Widget message(String urlImage, String title, String onOff, context) {
 //   return Scaffold(
 //     extendBodyBehindAppBar: true,
