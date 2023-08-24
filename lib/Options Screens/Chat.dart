@@ -26,7 +26,7 @@ class _ChatScreenState extends State<ChatScreen>
   FirebaseAuth _auth = FirebaseAuth.instance;
   late TabController _tabController;
   StreamSubscription<List<Map<String, dynamic>>>? _streamSubscription;
-  bool isChatTabSelected=true;
+  bool isChatTabSelected = true;
 
   // Stream<List<Map<String, dynamic>>>
   //     _getContactsWithConversationsStream() async* {
@@ -264,19 +264,21 @@ class _ChatScreenState extends State<ChatScreen>
         // ),
         YourGroupTab(),
       ]),
-      floatingActionButton: isChatTabSelected?FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
-        child: Icon(
-           Icons.chat,
-        ),
-      ):FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
-        child: Icon(
-          Icons.group_add_rounded,
-        ),
-      ),
+      floatingActionButton: isChatTabSelected
+          ? FloatingActionButton(
+              onPressed: () {},
+              backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
+              child: Icon(
+                Icons.chat,
+              ),
+            )
+          : FloatingActionButton(
+              onPressed: () {},
+              backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
+              child: Icon(
+                Icons.group_add_rounded,
+              ),
+            ),
     );
   }
 }
@@ -621,7 +623,12 @@ class _YourGroupTabState extends State<YourGroupTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("Groups")),
+      body: Container(
+        child: ListView.builder( itemCount: 4,itemBuilder: (BuildContext context, int index) {
+          return contact(
+              'assets/images/logo.png', 'Group$index', "", "", "", context);
+        }),
+      ),
     );
   }
 }
