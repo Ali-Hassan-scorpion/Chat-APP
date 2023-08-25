@@ -151,7 +151,194 @@ String chatRoomId(String user1, String user2) {
     return "$user2$user1";
   }
 }
+class CustomSearchDelegate extends SearchDelegate<String> {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
 
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, query);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    if (query.isEmpty) {
+      return Container(); // Return an empty container when query is empty
+    }
+
+    return FutureBuilder(
+      future: searchUsersByEmail(query),
+      // Replace with your method to search users by email
+      builder: (BuildContext context,
+          AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+              child: CircularProgressIndicator(
+                color: Color.fromRGBO(54, 94, 212, 1.0),
+              )); // Show a loading indicator while fetching results
+        }
+
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        final searchResults = snapshot.data ?? [];
+
+        return ListView.builder(
+          itemCount: searchResults.length,
+          itemBuilder: (BuildContext context, int index) {
+            final result = searchResults[index];
+            return contact(
+              'assets/images/logo.png', // Replace with actual image path
+              result['name'], // Assuming 'name' is the user's name
+              result['status'], // Replace with the appropriate time
+              result['status'], // Replace with the user's status
+              result['email'], // Replace with the user's message
+              context,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    if (query.isEmpty) {
+      return Container(); // Return an empty container when query is empty
+    }
+    return FutureBuilder(
+      future: getSuggestions(query),
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+              child: CircularProgressIndicator(
+                color: Color.fromRGBO(54, 94, 212, 1.0),
+              )); // Show a loading indicator while fetching suggestions
+        }
+
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        final suggestions = snapshot.data ?? [];
+
+        return ListView.builder(
+          itemCount: suggestions.length,
+          itemBuilder: (BuildContext context, int index) {
+            final suggestion = suggestions[index];
+            return FutureBuilder(
+              future: getUserData(suggestion),
+              // Replace with your method to fetch user data
+              builder: (BuildContext context,
+                  AsyncSnapshot<Map<String, dynamic>> userSnapshot) {
+                if (userSnapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(); // Return an empty widget while fetching user data
+                }
+
+                if (userSnapshot.hasError) {
+                  return Text('Error: ${userSnapshot.error}');
+                }
+
+                final userMap = userSnapshot.data ?? {};
+                return contact(
+                  'assets/images/logo.png', // Replace with actual image path
+                  userMap['name'] ?? suggestion,
+                  // Use the display name from user data, or the suggestion itself
+                  userMap['status'],
+                  // Replace with the appropriate time
+                  userMap['status'], // Replace with the user's status
+                  userMap['email'], // Replace with the user's message
+                  context,
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> onSearch(String email) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    QuerySnapshot snapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs[0].data() as Map<String, dynamic>;
+    }
+
+    return {};
+  }
+
+  Future<List<String>> getSuggestions(String query) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot snapshot = await _firestore
+        .collection('users')
+        .where('email', isGreaterThanOrEqualTo: query)
+        .get();
+
+    List<String> suggestions = [];
+    for (var doc in snapshot.docs) {
+      var email = doc['email'] as String;
+      if (email.startsWith(query)) {
+        suggestions.add(email);
+      }
+    }
+    return suggestions;
+  }
+
+  Future<List<Map<String, dynamic>>> searchUsersByEmail(String query) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot snapshot = await _firestore
+        .collection('users')
+        .where('email', isGreaterThanOrEqualTo: query)
+        .get();
+
+    List<Map<String, dynamic>> searchResults = [];
+    for (var doc in snapshot.docs) {
+      if (doc['email'].startsWith(query)) {
+        var userMap = doc.data() as Map<String, dynamic>;
+        searchResults.add(userMap);
+      }
+    }
+
+    return searchResults;
+  }
+
+  Future<Map<String, dynamic>> getUserData(String suggestion) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot snapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: suggestion)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs[0].data() as Map<String, dynamic>;
+    }
+
+    return {};
+  }
+}
 // Future<List<Map<String, dynamic>>> fetchContacts() async {
 //   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 //   FirebaseAuth _auth = FirebaseAuth.instance;

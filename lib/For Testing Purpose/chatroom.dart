@@ -218,7 +218,9 @@ class _chatroomstate extends State<chatroom> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: TextField(
+                            child: TextField(maxLines: null,
+                              minLines: 1,
+                              keyboardType: TextInputType.multiline,
                               controller: _message,
                               focusNode: _focusnode,
                               decoration: InputDecoration(
