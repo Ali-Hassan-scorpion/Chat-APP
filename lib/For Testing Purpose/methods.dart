@@ -124,20 +124,8 @@ Widget contact(
         ),
       ),
       title: Text(title),
-      subtitle: Row(
-        children: [
-          // const Icon(
-          //   Icons.done_all,
-          //   size: 20,
-          //   color: Colors.blueAccent,
-          // ),
-          // const SizedBox(
-          //   width: 4.0,
-          // ),
-          Text(
-            msgs,
-          ),
-        ],
+      subtitle: Text(
+        msgs,overflow: TextOverflow.ellipsis,softWrap: true,
       ),
       trailing: Text(time),
     ),
