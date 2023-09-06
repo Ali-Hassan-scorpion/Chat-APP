@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:safe_city_project/For%20Testing%20Purpose/methods.dart';
 
 import 'UserDashboard.dart';
@@ -325,10 +327,11 @@ class _signupState extends State<signup> {
                               isLoading = false;
                             });
                             print("Login Successfull");
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const UserDashboard()));
+                            Get.to(()=>UserDashboard());
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => const UserDashboard()));
                           }
                           else {
                             print("Login Failed");
@@ -390,11 +393,12 @@ class _signupState extends State<signup> {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        loginpage(usernameController: '')));
+                            Get.to(()=>loginpage());
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (BuildContext context) =>
+                            //             loginpage()));
                           },
                         ),
                       ),

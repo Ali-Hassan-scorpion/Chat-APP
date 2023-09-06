@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:safe_city_project/set_height_and_width.dart';
 
 class AddMembers extends StatefulWidget {
@@ -17,6 +19,7 @@ class _AddMembersState extends State<AddMembers> {
   List<Map<String, dynamic>> selectedContacts = [];
   bool isSelected = false;
   ScrollController _scrollController = ScrollController();
+   TextEditingController _groupName = TextEditingController();
 
   @override
   void initState() {
@@ -136,37 +139,39 @@ class _AddMembersState extends State<AddMembers> {
                               );
                             }),
                       ),
-                      Container(
-                        width: 300,
-                        margin:
-                            EdgeInsets.only(right: getwidth(context) * 0.05),
-                        padding: EdgeInsets.only(
-                          left: 8,
-                        ),
-                        height: getheight(context) * 0.1,
-                        child: TextField(
-                          showCursor: true,
-                          cursorColor: Color.fromRGBO(54, 94, 212, 1.0),
-                          keyboardType: TextInputType.name,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.group,color: Color.fromRGBO(54, 94, 212, 1.0)),
-                            hintText: "Group Name",
-                            hintStyle: TextStyle(
-                                color: Color.fromRGBO(54, 94, 212, 0.75),
-                                fontWeight: FontWeight.w500),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                              color: Color.fromRGBO(54, 94, 212, 1.0),
-                              width: 2,
-                            )),
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                              width: 1.5,
-                              color: Color.fromRGBO(54, 94, 212, 1.0),
-                            )),
-                          ),
-                        ),
-                      ),
+                      // Container(
+                      //   width: 300,
+                      //   margin:
+                      //       EdgeInsets.only(right: getwidth(context) * 0.05),
+                      //   padding: EdgeInsets.only(
+                      //     left: 8,
+                      //   ),
+                      //   height: getheight(context) * 0.1,
+                      //   child: TextField(
+                      //     controller: _groupName,
+                      //     showCursor: true,
+                      //     cursorColor: Color.fromRGBO(54, 94, 212, 1.0),
+                      //     keyboardType: TextInputType.name,
+                      //     decoration: InputDecoration(
+                      //       prefixIcon: Icon(Icons.group,
+                      //           color: Color.fromRGBO(54, 94, 212, 1.0)),
+                      //       hintText: "Group Name",
+                      //       hintStyle: TextStyle(
+                      //           color: Color.fromRGBO(54, 94, 212, 0.75),
+                      //           fontWeight: FontWeight.w500),
+                      //       focusedBorder: UnderlineInputBorder(
+                      //           borderSide: BorderSide(
+                      //         color: Color.fromRGBO(54, 94, 212, 1.0),
+                      //         width: 2,
+                      //       )),
+                      //       enabledBorder: UnderlineInputBorder(
+                      //           borderSide: BorderSide(
+                      //         width: 1.5,
+                      //         color: Color.fromRGBO(54, 94, 212, 1.0),
+                      //       )),
+                      //     ),
+                      //   ),
+                      // ),
                       Expanded(
                         child: Container(
                           height: getheight(context) * 0.88,
@@ -189,7 +194,6 @@ class _AddMembersState extends State<AddMembers> {
                                     // Remove the deselected contact from the selectedContacts list
                                     selectedContacts.remove(listofcontacts);
                                   }
-                                  print(selectedContacts);
                                   _scrollController.animateTo(
                                     _scrollController.position.maxScrollExtent,
                                     // Scroll to the maximum extent
@@ -249,7 +253,7 @@ class _AddMembersState extends State<AddMembers> {
                           // Remove the deselected contact from the selectedContacts list
                           selectedContacts.remove(listofcontacts);
                         }
-                        print(selectedContacts);
+
                       },
                       child: ListTile(
                         leading: Image.asset('assets/images/logo.png'),
@@ -279,11 +283,13 @@ class _AddMembersState extends State<AddMembers> {
       floatingActionButton: selectedContacts.length >= 1
           ? FloatingActionButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AddSubject(selectedContacts: selectedContacts)));
+                Get.to(()=>AddSubject(selectedContacts: selectedContacts));
+                //
+                // .push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (BuildContext context) =>
+                //             AddSubject(selectedContacts: selectedContacts)));
               },
               child: Icon(Icons.navigate_next),
               backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
@@ -328,40 +334,48 @@ class _AddSubjectState extends State<AddSubject> {
             ),
           ),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 350,
-              margin: EdgeInsets.only(right: getwidth(context) * 0.05),
-              padding: EdgeInsets.only(left: 8, right: 15, top: 15, bottom: 15),
-              height: getheight(context) * 0.1,
-              child: TextField(
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  hintText: "Group Name",
-                  hintStyle: TextStyle(
-                      color: Color.fromRGBO(54, 94, 212, 0.7),
-                      fontWeight: FontWeight.w500),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(
+        body: Container(
+          height: getheight(context),
+          width: getwidth(context),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 350,
+                // margin: EdgeInsets.only(
+                //     top: getheight(context) * 0.13,
+                //     left: getwidth(context) * 0.05,
+                //     right: getwidth(context) * 0.05),
+                // padding: EdgeInsets.all(15),
+                child: TextFormField(
+                  style: const TextStyle(color: Colors.black),
+                  keyboardType: TextInputType.emailAddress,
+                  // controller: _emailController,
+                  decoration: InputDecoration(
+                      labelText: "Group Name",
+                      labelStyle: const TextStyle(
                         color: Color.fromRGBO(54, 94, 212, 1.0),
-                        width: 2,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                            color: Color.fromRGBO(54, 94, 212, 1.0),
+                            width: 2,
+                          )),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                              color: Color.fromRGBO(54, 94, 212, 1.0),
+                              width: 1)),
+                      prefixIcon: const Icon(
+                        Icons.group,
+                        color: Color.fromRGBO(54, 94, 212, 1.0),
                       )),
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                    width: 2,
-                    color: Color.fromRGBO(54, 94, 212, 1.0),
-                  )),
                 ),
               ),
-            ),
-            Container(
-              height: getheight(context) * 0.8,
-              width: getwidth(context),
-            )
-          ],
+            ],
+          ),
         ));
   }
 }

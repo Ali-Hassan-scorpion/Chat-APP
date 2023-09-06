@@ -6,9 +6,8 @@ import 'SignUp.dart';
 import 'package:get/get.dart';
 
 class loginpage extends StatefulWidget {
-  final String usernameController;
 
-  const loginpage({Key? key, required this.usernameController})
+  const loginpage({Key? key})
       : super(key: key);
 
   @override
@@ -184,10 +183,11 @@ class _loginpageState extends State<loginpage> {
                         password: _passController.text,
                         context: context);
                     if (user != null) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const UserDashboard()));
+                      Get.to(()=>UserDashboard());
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => const UserDashboard()));
                     }
                   },
                   child: Container(

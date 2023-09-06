@@ -14,7 +14,7 @@ class main_2 extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
       home:  responsiveLayout(
-        mobileScreenLayout: loginpage(usernameController: ""),
+        mobileScreenLayout: loginpage(),
         webScreenLayout: web_loginpage(),
       ),
     );

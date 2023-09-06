@@ -210,10 +210,11 @@ class _ChatScreenState extends State<ChatScreen>
                     child: InkWell(
                   child: Text("Profile"),
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => Profile()));
+                    Get.to(()=>Profile());
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (BuildContext context) => Profile()));
                   },
                 )),
               ];
@@ -275,12 +276,13 @@ class _ChatScreenState extends State<ChatScreen>
             )
           : FloatingActionButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext) => AddMembers()));
+                Get.to(()=>AddMembers());
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (BuildContext) => AddMembers()));
               },
               backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
               child: Icon(
-                Icons.group_add_rounded,
+                Icons.groups,
               ),
             ),
     );

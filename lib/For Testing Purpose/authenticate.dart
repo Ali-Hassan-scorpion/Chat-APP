@@ -13,6 +13,6 @@ class authenticate extends StatelessWidget {
         return UserDashboard();
       }
     else
-      return loginpage(usernameController: "");
+      return loginpage();
   }
 }

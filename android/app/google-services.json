@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1067176453727",
-    "project_id": "safecityproject-28555",
-    "storage_bucket": "safecityproject-28555.appspot.com"
+    "project_number": "750786991319",
+    "project_id": "chatboxsafecity",
+    "storage_bucket": "chatboxsafecity.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1067176453727:android:be407e99689cbad93e1dea",
+        "mobilesdk_app_id": "1:750786991319:android:a9dd5fec1a7c9bf0d48c92",
         "android_client_info": {
           "package_name": "com.example.safe_city_project"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1067176453727-n9ullenmglde2odpplaq40cb9u464400.apps.googleusercontent.com",
+          "client_id": "750786991319-3h6inmi7974jb0quu7ff9s2uf1j0l5gn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBJy4YldlDUDqGMoWtc617QKH9KuSUXcKg"
+          "current_key": "AIzaSyBG8UeHjIVRBLiCcv3v0V9Bgdd9SLsnOsw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1067176453727-n9ullenmglde2odpplaq40cb9u464400.apps.googleusercontent.com",
+              "client_id": "750786991319-3h6inmi7974jb0quu7ff9s2uf1j0l5gn.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

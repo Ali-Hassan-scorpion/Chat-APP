@@ -3,6 +3,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:safe_city_project/set_height_and_width.dart';
 import 'package:uuid/uuid.dart';
@@ -114,7 +116,8 @@ class _chatroomstate extends State<chatroom> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Get.back();
+            // Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back_rounded),
         ),
@@ -218,7 +221,8 @@ class _chatroomstate extends State<chatroom> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: TextField(maxLines: null,
+                            child: TextField(
+                              maxLines: null,
                               minLines: 1,
                               keyboardType: TextInputType.multiline,
                               controller: _message,
@@ -337,7 +341,8 @@ class _chatroomstate extends State<chatroom> {
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
             child: InkWell(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              onTap:
+                  () => Navigator.of(context).push(MaterialPageRoute(
                   builder: (_) => ShowImage(imageurl: map['message']))),
               child: Container(
                 alignment: Alignment.center,

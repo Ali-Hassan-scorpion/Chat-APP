@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:safe_city_project/Options%20Screens/Chat.dart'; // Import the ChatScreen
 import 'package:safe_city_project/Options%20Screens/Optional.dart';
 import 'package:safe_city_project/Options%20Screens/Profile.dart';
@@ -79,33 +81,37 @@ class _UserDashboardState extends State<UserDashboard> {
                       return GestureDetector(
                         onTap: () {
                           if (itemText[index] == "Chat") {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => ChatScreen(),
-                              ),
-                            );
+                            Get.to(()=>ChatScreen());
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (BuildContext context) => ChatScreen(),
+                            //   ),
+                            // );
                           } else if (itemText[index] == "ToDo") {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => Todo(),
-                              ),
-                            );
+                            Get.to(()=>Todo());
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (BuildContext context) => Todo(),
+                            //   ),
+                            // );
                           } else if (itemText[index] == "Profile") {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => Profile(),
-                              ),
-                            );
+                            Get.to(()=>Profile());
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (BuildContext context) => Profile(),
+                            //   ),
+                            // );
                           } else if (itemText[index] == "Optional") {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) => Optional(),
-                              ),
-                            );
+                            Get.to(()=>Optional());
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (BuildContext context) => Optional(),
+                            //   ),
+                            // );
                           } else {
                             throw Error();
                           }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:safe_city_project/For%20Testing%20Purpose/chatroom.dart';
 import 'package:safe_city_project/Mobile%20Screens/loginpage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -68,10 +70,11 @@ Future logOut(BuildContext context) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
   try {
     await _auth.signOut().then((value) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const loginpage(usernameController: "")));
+      Get.to(()=>loginpage());
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => const loginpage()));
     });
   } catch (e) {
     print(e);
@@ -112,6 +115,7 @@ Widget contact(
             ),
           );
         }
+
       },
       leading: Container(
         height: 50,
