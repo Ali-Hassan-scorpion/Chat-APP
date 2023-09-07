@@ -210,7 +210,7 @@ class _ChatScreenState extends State<ChatScreen>
                     child: InkWell(
                   child: Text("Profile"),
                   onTap: () {
-                    Get.to(()=>Profile());
+                    Get.to(() => Profile());
                     // Navigator.push(
                     //     context,
                     //     MaterialPageRoute(
@@ -270,13 +270,13 @@ class _ChatScreenState extends State<ChatScreen>
           ? FloatingActionButton(
               onPressed: () {},
               backgroundColor: Color.fromRGBO(54, 94, 212, 1.0),
-              child: Icon(
-                Icons.chat,
-              ),
-            )
+              child: IconButton(
+                  onPressed: () => showSearch(
+                      context: context, delegate: CustomSearchDelegate()),
+                  icon: Icon(Icons.chat)))
           : FloatingActionButton(
               onPressed: () {
-                Get.to(()=>AddMembers());
+                Get.to(() => AddMembers());
                 // Navigator.push(context,
                 //     MaterialPageRoute(builder: (BuildContext) => AddMembers()));
               },
@@ -288,6 +288,7 @@ class _ChatScreenState extends State<ChatScreen>
     );
   }
 }
+
 class YourChatTab extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
