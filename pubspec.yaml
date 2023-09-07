@@ -49,6 +49,8 @@ dependencies:
   uuid: ^3.0.7
   flutter_launcher_icons: ^0.13.1
   get: ^4.3.8
+  curved_navigation_bar: ^1.0.3
+
 
 
 dev_dependencies:

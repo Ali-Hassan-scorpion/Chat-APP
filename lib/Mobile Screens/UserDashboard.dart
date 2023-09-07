@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:safe_city_project/Options%20Screens/Chat.dart'; // Import the ChatScreen
-import 'package:safe_city_project/Options%20Screens/Optional.dart';
 import 'package:safe_city_project/Options%20Screens/Profile.dart';
+import 'package:safe_city_project/Rizwan%20Bhai%20TODO/check.dart';
 import '../Options Screens/Todo.dart';
+import 'SignUp.dart';
 
 class UserDashboard extends StatefulWidget {
   const UserDashboard({super.key});
@@ -14,6 +16,7 @@ class UserDashboard extends StatefulWidget {
 }
 
 class _UserDashboardState extends State<UserDashboard> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
   List<String> itemImages = [
     "chatLogo.png",
     "todoLogo.png",
@@ -25,7 +28,7 @@ class _UserDashboardState extends State<UserDashboard> {
     "Chat",
     "ToDo",
     "Profile",
-    "Optional",
+    "Add Users",
   ];
 
   @override
@@ -89,7 +92,7 @@ class _UserDashboardState extends State<UserDashboard> {
                             //   ),
                             // );
                           } else if (itemText[index] == "ToDo") {
-                            Get.to(()=>Todo());
+                            Get.to(()=>MyApp2());
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
@@ -104,12 +107,16 @@ class _UserDashboardState extends State<UserDashboard> {
                             //     builder: (BuildContext context) => Profile(),
                             //   ),
                             // );
-                          } else if (itemText[index] == "Optional") {
-                            Get.to(()=>Optional());
+                          } else if (itemText[index] == "Add Users") {
+                            if(_auth.currentUser?.uid=='f52WXwSpvUecogG9olRQucxbS9B3')
+                              {Get.to(()=>signup());}
+                            else
+                              {Get.snackbar("Alert", "Only For Admins");}
+                            
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
-                            //     builder: (BuildContext context) => Optional(),
+                            //     builder: (BuildContext context) => Add Users(),
                             //   ),
                             // );
                           } else {
